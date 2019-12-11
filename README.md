@@ -3,14 +3,17 @@
 ## 配置说明
 
 ```php
-$host = 'localhost';          // 服务地址
-$port = 3306;                 // 端口
-$dbname = 'mysql';            // 数据库名
-$table = 'servers';           // 表名[null|tablename]null-打印数据库全部表
-$username = 'user';           // 用户
-$password = 'pass';           // 密码
-$charset = 'utf8mb4';         // 字符集
-$filename = 'mysql.md';       // 导出文件名（文件路径为当前文件目录）
+// 必须参数[$host, $username, $password, $dbname]
+$host = 'localhost';
+$username = 'user';
+$password = 'pass';
+$dbname = 'mysql';
+
+// 可选参数[$port, $table, $charset, $filename]
+$port = 3306;           // 默认为 3306
+$table = 'servers';     // 表名，默认为[null-打印全部表]
+$charset = 'utf8mb4';   // 字符集，默认为[utf8mb4]
+$filename = 'mysql';    // 不带后缀，默认为 数据库名[$dbname]
 ```
 
 ## 运行说明
