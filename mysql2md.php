@@ -12,14 +12,13 @@ try {
     /**
      * 可选参数[$port, $table, $charset, $filename]
      */
-    // $port = 3306;           // 默认为 3306
+    $port = 3306;           // 默认为 3306
     $table = 'servers';     // 表名，默认为[null-打印全部表]
     // $charset = 'utf8mb4';   // 字符集，默认为[utf8mb4]
     // $filename = 'mysql';    // 不带后缀，默认为 数据库名[$dbname]
 
-    $mysqlToMd = new MysqlToMd($host, $username, $password, $dbname);
+    $mysqlToMd = new MysqlToMd($host, $username, $password, $dbname, $port);
 
-    // $mysqlToMd->setPort($port);
     $mysqlToMd->setTable($table);
     // $mysqlToMd->setCharset($charset);
     // $mysqlToMd->setFilename($filename);
@@ -64,7 +63,7 @@ class MysqlToMd
      *
      * @var int
      */
-    protected $port = 3306;
+    protected $port;
     /**
      *
      * @var string
@@ -95,10 +94,11 @@ class MysqlToMd
      * @param  string $username
      * @param  string $password
      * @param  string $dbname
+     * @param  int $port [可选]
      */
-    public function __construct(string $host, string $username, string $password, string $dbname)
+    public function __construct(string $host, string $username, string $password, string $dbname, int $port = 3306)
     {
-        $this->setHost($host)->setUsername($username)->setPassword($password)->setDbname($dbname);
+        $this->setHost($host)->setUsername($username)->setPassword($password)->setDbname($dbname)->setPort($port);
         $this->mysqli = new mysqli($this->getHost(), $this->getUsername(), $this->getPassword(), $this->getDbname(), $this->getPort());
     }
 
@@ -128,12 +128,12 @@ class MysqlToMd
             if ($tableItems) {
                 $string = '';
                 foreach ($tableItems as $table) {
-                    $result = $this->getMysqli()->query('SHOW table status like \''. $table .'\'');
+                    $result = $this->getMysqli()->query('SHOW TABLE STATUS LIKE "'. $table .'"');
                     $tableInfo = $result->fetch_assoc();
                     $string .= $tableInfo['Name'] . ($tableInfo['Comment'] ? (' -- '. $tableInfo['Comment']) : '')."\n\n";
                     $string .= '| 字段 | 类型 | 空 | 默认值 | 注释 |'. "\n";
                     $string .= "| :- | :- | :- | :- | :- |\n";
-                    $result = $this->getMysqli()->query('SHOW FULL COLUMNS FROM '. $table);
+                    $result = $this->getMysqli()->query('SHOW FULL COLUMNS FROM `'. $table .'`');
                     if ($fields = $result->fetch_all()) foreach ($fields as $field) {
                         $string .= '| '. $field['0'] .' | '. $field['1'] .' | '. ($field['3'] === 'NO' ? '否' : '是') .' | '. $field['5'] .' | '. $field['8'] ." |\n";
                     }
