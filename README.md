@@ -3,23 +3,27 @@
 ## 配置说明
 
 ```php
-// 必须参数[$host, $username, $password, $dbname]
+// 必须参数[$host, $user, $pass, $dbname]
 $host = 'localhost';
-$username = 'user';
-$password = 'pass';
+$user = 'root';
+$pass = 'root';
 $dbname = 'mysql';
 
 // 可选参数[$port, $table, $charset, $filename]
-$port = 3306;           // 默认为 3306
-$table = 'servers';     // 表名，默认为[null-打印全部表]
-$charset = 'utf8mb4';   // 字符集，默认为[utf8mb4]
-$filename = 'mysql';    // 不带后缀，默认为 数据库名[$dbname]
+$port = 3306;      // 默认为 3306
+$table = null;     // 表名，默认为[null-打印全部表]
+$charset = null;   // 字符集，默认为[utf8mb4]
+$filename = null;  // 不带后缀，默认为 数据库名[$dbname]
 ```
 
 ## 运行说明
 
 ```shell
+1、修改文件中对应配置后执行：
 $ php ./mysql2md.php
+
+2、通过传递参数执行，其中[$port, $table, $charset, $filename]为可选参数：
+$ php ./mysql2md.php --host=localhost --user=root --pass=root --dbname=mysql --port=3306 --table=servers --charset=utf8 --filename=file
 ```
 
 ## 结果示例

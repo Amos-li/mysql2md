@@ -2,26 +2,43 @@
 
 try {
     /**
-     * 必须参数[$host, $username, $password, $dbname]
+     * 必须参数[$host, $user, $pass, $dbname]
      */
     $host = 'localhost';
-    $username = 'user';
-    $password = 'pass';
+    $user = 'root';
+    $pass = 'root';
     $dbname = 'mysql';
 
     /**
      * 可选参数[$port, $table, $charset, $filename]
      */
-    $port = 3306;           // 默认为 3306
-    $table = 'servers';     // 表名，默认为[null-打印全部表]
-    // $charset = 'utf8mb4';   // 字符集，默认为[utf8mb4]
-    // $filename = 'mysql';    // 不带后缀，默认为 数据库名[$dbname]
+    $port = 3306;      // 默认为 3306
+    $table = null;     // 表名，默认为[null-打印全部表]
+    $charset = null;   // 字符集，默认为[utf8mb4]
+    $filename = null;  // 不带后缀，默认为 数据库名[$dbname]
 
-    $mysqlToMd = new MysqlToMd($host, $username, $password, $dbname, $port);
+    $configs = [];
+    foreach($argv as $key => $val){
+        if ($key < 1) continue;
+        if (preg_match('/^--([^\d]*?[a-zA-Z0-9_]+)=([\S]*)/i', $val, $match)){
+            $configs[$match[1]] = $match[2];
+        }
+    }
 
-    $mysqlToMd->setTable($table);
-    // $mysqlToMd->setCharset($charset);
-    // $mysqlToMd->setFilename($filename);
+    isset($configs['host']) && $configs['host'] && $host = $configs['host'];
+    isset($configs['user']) && $configs['user'] && $user = $configs['user'];
+    isset($configs['pass']) && $configs['pass'] && $pass = $configs['pass'];
+    isset($configs['dbname']) && $configs['dbname'] && $dbname = $configs['dbname'];
+
+    isset($configs['port']) && $configs['port'] && $port = $configs['port'];
+    isset($configs['table']) && $configs['table'] && $table = $configs['table'];
+    isset($configs['charset']) && $configs['charset'] && $charset = $configs['charset'];
+    isset($configs['filename']) && $configs['filename'] && $filename = $configs['filename'];
+
+    $mysqlToMd = new MysqlToMd($host, $user, $pass, $dbname, $port);
+    !is_null($table) && $mysqlToMd->setTable($table);
+    !is_null($charset) && $mysqlToMd->setCharset($charset);
+    !is_null($filename) && $mysqlToMd->setFilename($filename);
 
     if ($row = $mysqlToMd->writeToMd()) {
         echo "导出成功，共导出 ". $row ." 个表！\n";
