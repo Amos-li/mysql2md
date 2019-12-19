@@ -17,14 +17,7 @@ try {
     $charset = null;   // 字符集，默认为[utf8mb4]
     $filename = null;  // 不带后缀，默认为 数据库名[$dbname]
 
-    $configs = [];
-    foreach($argv as $key => $val){
-        if ($key < 1) continue;
-        if (preg_match('/^--([^\d]*?[a-zA-Z0-9_]+)=([\S]*)/i', $val, $match)){
-            $configs[$match[1]] = $match[2];
-        }
-    }
-
+    $configs = getopt('', ['host:', 'user:', 'pass:', 'dbname:', 'port:', 'table:', 'charset:', 'filename:']);
     isset($configs['host']) && $configs['host'] && $host = $configs['host'];
     isset($configs['user']) && $configs['user'] && $user = $configs['user'];
     isset($configs['pass']) && $configs['pass'] && $pass = $configs['pass'];
